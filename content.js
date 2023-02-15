@@ -2,8 +2,13 @@ init();
 
 async function init(){
   const distURL = new URL(chrome.runtime.getURL("/dist/"));
-  await loadLibrary(distURL+"/dbr.js","text/javascript");
-  await loadLibrary(distURL+"/reader.js","text/javascript");
+  chrome.storage.sync.get({
+    dbrLicense: ''
+  }, async function(items) {
+    console.log("using license:"+items.dbrLicense);
+    await loadLibrary(distURL+"/dbr.js","text/javascript","",{"data-license":items.dbrLicense});
+    await loadLibrary(distURL+"/reader.js","text/javascript");
+  });
 }
 
 chrome.runtime.onMessage.addListener(

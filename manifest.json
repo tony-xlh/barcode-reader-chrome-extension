@@ -12,7 +12,8 @@
       "css": ["style.css"]
     }
   ],
-  "permissions": ["activeTab","contextMenus"],
+  "permissions": ["storage","activeTab","contextMenus"],
+  "options_page": "options.html",
   "web_accessible_resources": [
     {
       "resources": ["dist/*"],
