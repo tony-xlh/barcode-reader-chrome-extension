@@ -6,7 +6,13 @@ async function decode(img) {
     DBRReader = await Dynamsoft.DBR.BarcodeReader.createInstance();
   }
   updateStatus("Decoding...");
-  const results = await DBRReader.decode(img);
+  let results;
+  try {
+    results = await DBRReader.decode(img);  
+  } catch (error) {
+    updateStatus("Error "+error);
+    return;
+  }
   updateStatus("Found "+results.length+((results.length>1)?" barcodes.":" barcode."));
   if (results.length > 0) {
     const resultList = document.querySelector(".dbr-results");
@@ -49,8 +55,10 @@ function removeModal(){
   document.querySelector(".dbr-modal").remove();
 }
 
-function decodeFromSrc() {
-  let src = document.getElementById("dbr").getAttribute("imgSrc");
+function decodeFromSrc(src) {
+  if (!src) {
+    src = document.getElementById("dbr").getAttribute("imgSrc");
+  }
   if (src) {
     console.log("decoding "+src);
     let img = document.createElement("img");
