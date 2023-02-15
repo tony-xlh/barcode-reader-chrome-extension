@@ -2,16 +2,25 @@ init();
 
 async function init(){
   const distURL = new URL(chrome.runtime.getURL("/dist/"));
-  console.log(distURL);
   await loadLibrary(distURL+"/dbr.js","text/javascript");
   await loadLibrary(distURL+"/reader.js","text/javascript");
 }
 
-function loadLibrary(src,type,id,data){
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(request.info);
+    if (request.info.srcUrl) {
+      const distURL = new URL(chrome.runtime.getURL("/dist/"));
+      loadLibrary(distURL+"/read.js","text/javascript","dbr",{imgSrc:request.info.srcUrl});
+    }
+  }
+);
+
+function loadLibrary(srcUrl,type,id,data){
   return new Promise(function (resolve, reject) {
     let scriptEle = document.createElement("script");
     scriptEle.setAttribute("type", type);
-    scriptEle.setAttribute("src", src);
+    scriptEle.setAttribute("src", srcUrl);
     if (id) {
       scriptEle.id = id;
     }
@@ -22,11 +31,11 @@ function loadLibrary(src,type,id,data){
     }
     document.body.appendChild(scriptEle);
     scriptEle.addEventListener("load", () => {
-      console.log(src+" loaded")
+      console.log(srcUrl+" loaded")
       resolve(true);
     });
     scriptEle.addEventListener("error", (ev) => {
-      console.log("Error on loading "+src, ev);
+      console.log("Error on loading "+srcUrl, ev);
       reject(ev);
     });
   });
