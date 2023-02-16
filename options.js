@@ -1,7 +1,9 @@
 function save() {
   const dbrLicense = document.getElementById("dbrLicense");
+  const template = document.querySelector("textarea");
   chrome.storage.sync.set({
-    dbrLicense: dbrLicense.value
+    dbrLicense: dbrLicense.value,
+    dbrTemplate: template.value
   }, function() {
     // Update status to let user know options were saved.
     alert("saved");
@@ -10,10 +12,14 @@ function save() {
 
 function load() {
   chrome.storage.sync.get({
-    dbrLicense: ''
+    dbrLicense: '',
+    dbrTemplate: ''
   }, function(items) {
     if (items.dbrLicense) {
       document.getElementById("dbrLicense").value = items.dbrLicense;
+    }
+    if (items.dbrTemplate) {
+      document.querySelector("textarea").value = items.dbrTemplate;
     }
   });
 }

@@ -5,7 +5,6 @@ async function init(){
   chrome.storage.sync.get({
     dbrLicense: ''
   }, async function(items) {
-    console.log("using license:"+items.dbrLicense);
     await loadLibrary(distURL+"/dbr.js","text/javascript","",{"data-license":items.dbrLicense});
     await loadLibrary(distURL+"/reader.js","text/javascript");
   });
@@ -13,10 +12,13 @@ async function init(){
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    console.log(request.info);
     if (request.info.srcUrl) {
       const distURL = new URL(chrome.runtime.getURL("/dist/"));
-      loadLibrary(distURL+"/read.js","text/javascript","dbr",{imgSrc:request.info.srcUrl});
+      chrome.storage.sync.get({
+        dbrTemplate: ''
+      }, async function(items) {
+        loadLibrary(distURL+"/read.js","text/javascript","dbr",{imgSrc:request.info.srcUrl,template:items.dbrTemplate});
+      });
     }
   }
 );

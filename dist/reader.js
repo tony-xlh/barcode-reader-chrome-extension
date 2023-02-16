@@ -1,10 +1,26 @@
 let DBRReader;
-async function decode(img) {
+let previousDBRTemplate = "";
+
+async function updateRuntimeSettings(template){
+  if (template != undefined) {
+    if (previousDBRTemplate != template) {
+      if (template === "") {
+        await DBRReader.resetRuntimeSettings();
+      }else{
+        await DBRReader.initRuntimeSettingsWithString(template);
+      }
+      previousDBRTemplate = template;
+    }
+  }
+}
+
+async function decode(img, template) {
   showModal();
   if (!DBRReader) {
     updateStatus("Initializing...");
     DBRReader = await Dynamsoft.DBR.BarcodeReader.createInstance();
   }
+  updateRuntimeSettings(template);
   updateStatus("Decoding...");
   let results;
   try {
@@ -55,10 +71,7 @@ function removeModal(){
   document.querySelector(".dbr-modal").remove();
 }
 
-function decodeFromSrc(src) {
-  if (!src) {
-    src = document.getElementById("dbr").getAttribute("imgSrc");
-  }
+function decodeFromSrc(src, template) {
   if (src) {
     let img = document.createElement("img");
     img.crossOrigin = "Anonymous";
@@ -68,9 +81,8 @@ function decodeFromSrc(src) {
       updateStatus("Unable to load the image");
     }
     img.onload = async function() {
-      await decode(img);
+      await decode(img, template);
       document.getElementById("dbr").remove();
     }
   }
-  
 }
