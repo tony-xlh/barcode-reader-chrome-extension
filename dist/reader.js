@@ -60,9 +60,13 @@ function decodeFromSrc(src) {
     src = document.getElementById("dbr").getAttribute("imgSrc");
   }
   if (src) {
-    console.log("decoding "+src);
     let img = document.createElement("img");
-    img.src = src;
+    img.crossOrigin = "Anonymous";
+    img.src = src;  
+    img.onerror = function (e) {
+      showModal();
+      updateStatus("Unable to load the image");
+    }
     img.onload = async function() {
       await decode(img);
       document.getElementById("dbr").remove();
