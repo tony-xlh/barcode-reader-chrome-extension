@@ -8,7 +8,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
   chrome.tabs.sendMessage(tab.id, {info:info}, function(response) {
-		console.log(response.farewell);
+		console.log(response);
   });
 });
 
