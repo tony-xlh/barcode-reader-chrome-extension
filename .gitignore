@@ -14,3 +14,4 @@ dist/dbr-9.6.2.standby.full.wasm
 dist/dbr-9.6.2.wasm
 dist/dbr.pure.esm.js    
 dist/dls.license.dialog.html
+*.zip
